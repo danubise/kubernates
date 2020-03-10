@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis-slave
+
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: redis-slave
+  template:
+    metadata:
+      name: redis-slave
+      labels:
+        app: redis-slave
+        task: final
+        redis: cluster
+    spec:
+      containers:
+        - image: redis
+          env:
+            - name: REDIS_MASTER_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: redisslaveconfig
+                  key: REDIS_MASTER_HOST
+          name: redis-slave
+          args: ["--slaveof", "$(REDIS_MASTER_HOST)" , "6379"]
+          ports:
+            - containerPort: 6379
