@@ -7,7 +7,7 @@ spec:
   replicas: 2
   serviceName: elasticsearch
   selector:
-    name: elasticsearch
+    app: elasticsearch
   template:
     metadata:
       name: elasticsearch
