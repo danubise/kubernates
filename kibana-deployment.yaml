@@ -17,12 +17,12 @@ spec:
     spec:
       containers:
         - image: docker.elastic.co/kibana/kibana:7.1.1
-          env:
-            - name: ELASTICSEARCH_HOSTS
-              valueFrom:
-                configMapKeyRef:
-                  name: kibanaconfig
-                  key: ELASTICSEARCH_HOSTS
+#          env:
+#            - name: ELASTICSEARCH_HOSTS
+#              valueFrom:
+#                configMapKeyRef:
+#                  name: kibanaconfig
+#                  key: ELASTICSEARCH_HOSTS
           name: kibana
           ports:
             - containerPort: 5601
