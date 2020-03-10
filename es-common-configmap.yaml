@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: es-common
+data:
+  clusterinitial_master_nodes: "elasticsearch-0,elasticsearch-1"
+  clustername: "docker-cluster"
+  bootstrapmemory_lock: "false"
+  discoveryseed_hosts-elasticsearch-0: "elasticsearch-1"
+  discoveryseed_hosts-elasticsearch-1: "elasticsearch-0"
