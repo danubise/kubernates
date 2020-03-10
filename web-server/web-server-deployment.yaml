@@ -19,5 +19,31 @@ spec:
         - image: quay.io/myafk/interactive:stable
           name: web-server
           command: ["interactive", "ingress"]
+          env:
+            - name: REDIS_SLAVE_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: werserveerconfig
+                  key: REDIS_SLAVE_HOST
+            - name: REDIS_MASTER_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: werserveerconfig
+                  key: REDIS_MASTER_HOST
+            - name: KUBERNETES_SERVICE_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: werserveerconfig
+                  key: KUBERNETES_SERVICE_HOST
+            - name: KUBERNETES_SERVICE_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: werserveerconfig
+                  key: KUBERNETES_SERVICE_PORT
+            - name: ELASTICSEARCH_HOSTS
+              valueFrom:
+                configMapKeyRef:
+                  name: werserveerconfig
+                  key: ELASTICSEARCH_HOSTS
           ports:
             - containerPort: 8085
