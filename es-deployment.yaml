@@ -6,6 +6,9 @@ metadata:
 spec:
   replicas: 2
   serviceName: elasticsearch
+  selector:
+    metadata:
+      name: elasticsearch
   template:
     metadata:
       name: elasticsearch
