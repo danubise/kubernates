@@ -1,0 +1,94 @@
+# ConfigMap
+---
+apiVersion: v1
+metadata:
+  name: redisslaveconfig
+data:
+  REDIS_MASTER_HOST: "redis-master.default.svc.cluster.local"
+kind: ConfigMap
+# ClusterIP service for redis-master
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis-master
+spec:
+  type: ClusterIP
+  ports:
+    - port: 6379
+      targetPort: 6379
+      protocol: TCP
+      name: http
+  selector:
+    app: redis-master
+# ClusterIP service for redis: cluster
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis-cluster
+spec:
+  type: ClusterIP
+  ports:
+    - port: 6379
+      targetPort: 6379
+      protocol: TCP
+      name: http
+  selector:
+    redis: cluster
+# Deployment app: redis-master
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis-master
+
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: redis-master
+  template:
+    metadata:
+      name: redis-master
+      labels:
+        app: redis-master
+        task: final
+        redis: cluster
+    spec:
+      containers:
+        - image: redis
+          name: redis-master
+          ports:
+            - containerPort: 6379
+# ReplicationController app: redis-slave
+---
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: redis-slave
+
+spec:
+  replicas: 1
+  selector:
+    app: redis-slave
+  template:
+    metadata:
+      name: redis-slave
+      labels:
+        app: redis-slave
+        task: final
+        redis: cluster
+    spec:
+      containers:
+        - image: redis
+          env:
+            - name: REDIS_MASTER_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: redisslaveconfig
+                  key: REDIS_MASTER_HOST
+          name: redis-slave
+          args: ["--slaveof", "$(REDIS_MASTER_HOST)" , "6379"]
+          ports:
+            - containerPort: 6379

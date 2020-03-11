@@ -1,4 +1,4 @@
---- ConfigMap
+# ConfigMap
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -10,7 +10,7 @@ data:
   bootstrapmemory_lock: "false"
   discoveryseed_hosts-elasticsearch-0: "elasticsearch-1"
   discoveryseed_hosts-elasticsearch-1: "elasticsearch-0"
---- ClusterIP Service elasticsearch-0
+# ClusterIP Service elasticsearch-0
 ---
 apiVersion: v1
 kind: Service
@@ -25,7 +25,7 @@ spec:
       name: http
   selector:
     statefulset.kubernetes.io/pod-name: elasticsearch-0
---- ClusterIP Service elasticsearch-1
+# ClusterIP Service elasticsearch-1
 ---
 apiVersion: v1
 kind: Service
@@ -40,7 +40,7 @@ spec:
       name: http
   selector:
     statefulset.kubernetes.io/pod-name: elasticsearch-1
---- ClusterIP service for all elasticsearch nodes
+# ClusterIP service for all elasticsearch nodes
 ---
 apiVersion: v1
 kind: Service
@@ -55,7 +55,7 @@ spec:
       name: http
   selector:
     app: elasticsearch
---- StatefulSet elasticsearch
+# StatefulSet elasticsearch
 ---
 apiVersion: apps/v1
 kind: StatefulSet
@@ -103,4 +103,4 @@ spec:
           name: elasticsearch
           ports:
             - containerPort: 9200
----
+
