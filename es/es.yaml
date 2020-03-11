@@ -1,0 +1,106 @@
+--- ConfigMap
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: es-common
+data:
+  clusterinitial_master_nodes: "elasticsearch-0,elasticsearch-1"
+  clustername: "docker-cluster"
+  bootstrapmemory_lock: "false"
+  discoveryseed_hosts-elasticsearch-0: "elasticsearch-1"
+  discoveryseed_hosts-elasticsearch-1: "elasticsearch-0"
+--- ClusterIP Service elasticsearch-0
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: elasticsearch-0
+spec:
+  type: ClusterIP
+  ports:
+    - port: 9200
+      targetPort: 9200
+      protocol: TCP
+      name: http
+  selector:
+    statefulset.kubernetes.io/pod-name: elasticsearch-0
+--- ClusterIP Service elasticsearch-1
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: elasticsearch-1
+spec:
+  type: ClusterIP
+  ports:
+    - port: 9200
+      targetPort: 9200
+      protocol: TCP
+      name: http
+  selector:
+    statefulset.kubernetes.io/pod-name: elasticsearch-1
+--- ClusterIP service for all elasticsearch nodes
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: elasticsearch
+spec:
+  type: ClusterIP
+  ports:
+    - port: 9200
+      targetPort: 9200
+      protocol: TCP
+      name: http
+  selector:
+    app: elasticsearch
+--- StatefulSet elasticsearch
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: elasticsearch
+
+spec:
+  replicas: 2
+  serviceName: elasticsearch
+  selector:
+    matchLabels:
+      app: elasticsearch
+  template:
+    metadata:
+      name: elasticsearch
+      labels:
+        app: elasticsearch
+        task: final
+        es: cluster
+    spec:
+      containers:
+        - image: docker.elastic.co/elasticsearch/elasticsearch:7.1.1
+          env:
+            - name: bootstrap.memory_lock
+              valueFrom:
+                configMapKeyRef:
+                  name: es-common
+                  key: bootstrapmemory_lock
+            - name: cluster.name
+              valueFrom:
+                configMapKeyRef:
+                  name: es-common
+                  key: clustername
+            - name: cluster.initial_master_nodes
+              valueFrom:
+                configMapKeyRef:
+                  name: es-common
+                  key: clusterinitial_master_nodes
+          #            - name: discovery.seed_hosts
+          #              valueFrom:
+          #                configMapKeyRef:
+          #                  name: es-common
+          #                  key: discoveryseed_hosts-$(node.name)
+
+          name: elasticsearch
+          ports:
+            - containerPort: 9200
+---
