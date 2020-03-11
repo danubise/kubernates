@@ -16,7 +16,7 @@ kind: Service
 metadata:
   name: elasticsearch
 spec:
-  type: None
+  type: ClusterIP
   ports:
     - port: 9200
       targetPort: 9200
