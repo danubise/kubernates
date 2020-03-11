@@ -46,7 +46,7 @@ spec:
       containers:
         - image: docker.elastic.co/kibana/kibana:7.1.1
           envFrom:
-            configMapRef:
+            - configMapRef:
               name: kibanaconfig
           name: kibana
           ports:
