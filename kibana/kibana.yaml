@@ -50,6 +50,6 @@ spec:
             - configMapRef:
                 name: kibanaconfig
           name: kibana
-          args: ["--logging.verbose", "$(REDIS_MASTER_HOST)" , "6379"]
+#          args: ["--logging.verbose", "$(REDIS_MASTER_HOST)" , "6379"]
           ports:
             - containerPort: 5601
