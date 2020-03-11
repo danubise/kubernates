@@ -1,6 +1,0 @@
-apiVersion: v1
-metadata:
-  name: kibanaconfig
-data:
-  ELASTICSEARCH_HOSTS: "elasticsearch"
-kind: ConfigMap

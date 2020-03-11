@@ -1,3 +1,15 @@
+# ConfigMap
+apiVersion: v1
+metadata:
+  name: kibanaconfig
+data:
+  ELASTICSEARCH_HOSTS: "http://elasticsearch.default.svc.cluster.local:9200"
+  SERVER_NAME: "kibana-logging"
+  SERVER_BASEPATH: "/api/v1/namespaces/kube-system/services/kibana-logging/proxy"
+  SERVER_REWRITEBASEPATH: "false"
+kind: ConfigMap
+# ClusterIP service for kibana
+---
 apiVersion: v1
 kind: Service
 metadata:
@@ -11,6 +23,7 @@ spec:
       name: http
   selector:
     app: kibana
+# Deployment kibana
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -32,21 +45,9 @@ spec:
     spec:
       containers:
         - image: docker.elastic.co/kibana/kibana:7.1.1
-          env:
-            - name: ELASTICSEARCH_HOSTS
-              value: http://elasticsearch:9200
-            - name: SERVER_NAME
-              value: kibana-logging
-            - name: SERVER_BASEPATH
-              value: /api/v1/namespaces/kube-system/services/kibana-logging/proxy
-            - name: SERVER_REWRITEBASEPATH
-              value: "false"
-          #            - name: ELASTICSEARCH_HOSTS
-          #              value: http://elasticsearch:9200
-          #              valueFrom:
-          #                configMapKeyRef:
-          #                  name: kibanaconfig
-          #                  key: ELASTICSEARCH_HOSTS
+          envFrom:
+            configMarRef:
+              name: kibanaconfig
           name: kibana
           ports:
             - containerPort: 5601
