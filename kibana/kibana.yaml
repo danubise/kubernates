@@ -7,6 +7,7 @@ data:
   SERVER_NAME: "kibana-logging"
   SERVER_BASEPATH: "/api/v1/namespaces/kube-system/services/kibana-logging/proxy"
   SERVER_REWRITEBASEPATH: "false"
+  logging_verbose: "true"
 kind: ConfigMap
 # ClusterIP service for kibana
 ---
@@ -49,5 +50,6 @@ spec:
             - configMapRef:
                 name: kibanaconfig
           name: kibana
+          args: ["--logging.verbose", "$(REDIS_MASTER_HOST)" , "6379"]
           ports:
             - containerPort: 5601
