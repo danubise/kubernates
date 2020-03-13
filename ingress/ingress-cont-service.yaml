@@ -1,0 +1,21 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: nginx-ingress-svc
+  namespace: nginx-ingress
+  labels:
+    app: nginx-ingress
+
+spec:
+#  externalTrafficPolicy: Local
+  type: ClusterIP
+  selector:
+    app: nginx-ingress
+
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
+    - name: https
+      port: 443
+      targetPort: https
