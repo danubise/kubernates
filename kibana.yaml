@@ -5,8 +5,8 @@ metadata:
 data:
   ELASTICSEARCH_HOSTS: "http://elasticsearch.default.svc.cluster.local:9200"
   SERVER_NAME: "kibana-logging"
-#  SERVER_BASEPATH: "/api/v1/namespaces/kube-system/services/kibana-logging/proxy"
-  SERVER_REWRITEBASEPATH: "false"
+  SERVER_BASEPATH: "/kibana"
+  SERVER_REWRITEBASEPATH: "true"
   logging_verbose: "true"
 kind: ConfigMap
 # ClusterIP service for kibana
