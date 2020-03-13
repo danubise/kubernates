@@ -66,4 +66,18 @@ spec:
             - containerPort: 9300
               name: inter-node
               protocol: TCP
+          volumeMounts:
+            - name: elasticsearch
+              mountPath: /usr/share/elasticsearch/data
+  volumeClaimTemplates:
+    - metadata:
+        name: elasticsearch
+      spec:
+        accessModes: [ "ReadWriteOnce" ]
+        resources:
+          requests:
+            storage: 10Gi
+        selector:
+          matchLabels:
+            component: elasticsearch
 

@@ -14,3 +14,7 @@ kubectl delete svc kibana
 kubectl delete Deployment kibana
 kubectl delete ingress webserver
 kubectl delete namespace ingress-nginx
+kubectl delete pvc elasticsearch-elasticsearch-1
+kubectl delete pvc elasticsearch-elasticsearch-1
+kubectl delete pv elasticsearch-0
+kubectl delete pv elasticsearch-1
