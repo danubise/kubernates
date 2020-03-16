@@ -1,0 +1,88 @@
+apiVersion: apps/v1 # for Kubernetes versions before 1.9.0 use apps/v1beta2
+kind: DaemonSet
+metadata:
+  name: cadvisor
+  namespace: cadvisor
+  annotations:
+    seccomp.security.alpha.kubernetes.io/pod: 'docker/default'
+spec:
+  selector:
+    matchLabels:
+      name: cadvisor
+  template:
+    metadata:
+      labels:
+        name: cadvisor
+    spec:
+      serviceAccountName: cadvisor
+      containers:
+        - name: cadvisor
+          image: k8s.gcr.io/cadvisor:v0.36.0
+          resources:
+            requests:
+              memory: 200Mi
+              cpu: 150m
+            limits:
+              memory: 2000Mi
+              cpu: 300m
+          volumeMounts:
+            - name: rootfs
+              mountPath: /rootfs
+              readOnly: true
+            - name: varrun
+              mountPath: /var/run
+            - name: sys
+              mountPath: /sys
+            - name: syscgroup
+              mountPath: /sys/fs/cgroup
+#            - name: sys2
+#              mountPath: /sys/fs/cgroup/cpuacct,cpu
+#            - name: syscpu
+#              mountPath: /sys/fs/cgroup/cpu
+#            - name: syscpuacct
+#              mountPath: /sys/fs/cgroup/cpuacct
+# -v /:/rootfs,ro
+# -v /var/run:/var/run
+# -v /sys:/sys
+# -v /var/lib/docker:/var/lib/docker
+# -v /dev/disk:/dev/disk,ro -m 268435456"
+            - name: docker
+              mountPath: /var/lib/docker
+
+            - name: disk
+              mountPath: /dev/disk
+              readOnly: true
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+      automountServiceAccountToken: false
+      terminationGracePeriodSeconds: 30
+      volumes:
+        - name: rootfs
+          hostPath:
+            path: /
+        - name: varrun
+          hostPath:
+            path: /var/run
+        - name: sys
+          hostPath:
+            path: /sys
+        - name: syscpu
+          hostPath:
+            path: /sys/fs/cgroup/cpu
+        - name: syscpuacct
+          hostPath:
+            path: /sys/fs/cgroup/cpuacct
+        - name: syscgroup
+          hostPath:
+            path: /sys/fs/cgroup
+        - name: sys2
+          hostPath:
+            path: /sys/fs/cgroup/cpu,cpuacct
+        - name: docker
+          hostPath:
+            path: /var/lib/docker
+        - name: disk
+          hostPath:
+            path: /dev/disk

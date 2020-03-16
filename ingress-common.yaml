@@ -26,3 +26,25 @@ spec:
             backend:
               serviceName: kibana
               servicePort: 5601
+---
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: cadvisor
+  namespace: cadvisor
+  annotations:
+#    nginx.ingress.kubernetes.io/rewrite-target: /$2
+#    kubernetes.io/ingress.class: "nginx"
+spec:
+  rules:
+    - host: monitoring.example.com
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: prometheus
+              servicePort: 9090
+          - path: /graphana(/|$)(.*)
+            backend:
+              serviceName: graphana
+              servicePort: 8080
