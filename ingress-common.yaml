@@ -44,7 +44,25 @@ spec:
             backend:
               serviceName: prometheus
               servicePort: 9090
-          - path: /graphana(/|$)(.*)
+          - path: /grafana
             backend:
-              serviceName: graphana
-              servicePort: 8080
+              serviceName: grafana
+              servicePort: 3000
+---
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: grafana
+  namespace: cadvisor
+  annotations:
+#    nginx.ingress.kubernetes.io/rewrite-target: /$2
+#    kubernetes.io/ingress.class: "nginx"
+spec:
+  rules:
+    - host: grafana.example.com
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: grafana
+              servicePort: 3000
